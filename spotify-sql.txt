@@ -1,0 +1,248 @@
+-- Active. 1666618889553@@127.0.0.1@3307@spotify
+
+--Setup
+
+SET FOREIGN_KEY_CHECKS=0;
+
+----------------------------------------------------------------------------
+
+--Tables--
+
+--Account
+CREATE TABLE Account(  
+    AccountID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    UserName VARCHAR(20) NOT NULL,
+    Email VARCHAR(320) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Followers INT,
+    Following INT
+);
+
+--Podcast
+CREATE TABLE Podcast(
+  PodcastID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  PodcastName VARCHAR(255) NOT NULL,
+  Tags VARCHAR(255),
+  Duration FLOAT NOT NULL
+);
+
+--Artist
+CREATE TABLE Artist(
+  ArtistID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  ArtistName VARCHAR(255) NOT NULL,
+  Nationality VARCHAR(20) NOT NULL,
+  Listeners INT 
+);
+
+--Album
+CREATE TABLE Album(
+  AlbumID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  ArtistID INT,
+  AlbumName VARCHAR(255) NOT NULL,
+  SongCount INT NOT NULL,
+  Duration FLOAT NOT NULL,
+  FOREIGN KEY (ArtistID) REFERENCES Artist(ArtistID)
+);
+
+--Song
+CREATE TABLE Song(
+  SongID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  ArtistID INT NOT NULL,
+  AlbumID INT NOT NULL ,
+  SongName VARCHAR(255) NOT NULL,
+  Duration FLOAT NOT NULL,
+  Plays INT,
+  FOREIGN KEY (ArtistID) REFERENCES Artist(ArtistID),
+  FOREIGN KEY (AlbumID) REFERENCES Album(AlbumID)
+);
+
+CREATE TABLE PlaylistSongs(
+  PlaylistSongsID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  PlaylistID INT NOT NULL,
+  SongID INT NOT NULL,
+  FOREIGN KEY (PlaylistID) REFERENCES Playlist(PlaylistID),
+  FOREIGN KEY (SongID) REFERENCES Song(SongID)
+);
+
+
+--Playlist
+CREATE TABLE Playlist(
+  PlaylistID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  AccountID INT NOT NULL,
+  Owner VARCHAR(20) NOT NULL,
+  PlaylistName VARCHAR(255) NOT NULL,
+  Type VARCHAR(30),
+  SongCount INT NOT NULL,
+  Duration FLOAT NOT NULL,
+  Likes INT,
+  FOREIGN KEY (AccountID) REFERENCES Account(AccountID)
+);
+
+----------------------------------------------------------------------------
+
+--Inserts
+
+
+INSERT INTO Account(UserName, Email, Password, Followers, Following)
+VALUES ('JohnnyBoi', 'johnny@gmail.com', 'pass123', 20, 16),
+       ('Anton', 'anton@gmail.com', 'pass123', 40, 15),
+       ('Jenny', 'jenny@gmail.com', 'pass123', 23, 14),
+       ('Eva', 'eva@gmail.com', 'pass123', 21, 12);
+
+INSERT INTO Artist(ArtistName, Nationality, Listeners)
+VALUES ('AC/DC', 'Australian', 77899808),
+       ('Red Hot Chili Peppers','American', 99998898),
+       ('Led Zeppelin', 'English', 84176876),
+       ('Psychedelic Porn Crumpets', 'Australian', 232139897);
+
+
+INSERT INTO Album(ArtistID,AlbumName, SongCount, Duration)
+VALUES (1,'Back in Black', 10, 42.00),
+       (2,'Return of the Dream Canteen',17, 75.04),
+       (3,'Houses of the Holy', 8, 40.57),
+       (4,'High Visceral {Part 1}', 10, 55.04);
+
+
+INSERT INTO Playlist(AccountID,Owner,PlaylistName, Type, SongCount, Duration, Likes)
+VALUES (1,'Johnny', 'Favourite Songs', 'Public', 2, 74.32, 121232),
+       (3,'Jenny', 'Best Songs', 'Public', 2, 54.32, 1221452),
+       (3,'Jenny', 'Awesome Songs', 'Private', 3, 34.32, 122132),
+       (4,'Eva', 'Cool Songs', 'Public', 3, 72.32, 123231);
+
+INSERT INTO Podcast(PodcastName, Tags, Duration)
+VALUES ('The Joe Rogan Experience', 'Comedy, Music, Life', 94.00),
+       ('Pcychedelic','Drugs, Music, Lavalamps', 180.32),
+       ('Chill', 'Jazz, Tea', 68.23),
+       ('Bill Murr Podcast','Comedy', 93.12);
+
+INSERT INTO PlaylistSongs(PlaylistID,SongID)
+VALUES (1,2),(1,3),(2,3),(2,5),(3,5),(3,10),(3,6),(4,2),(4,8),(4,9);
+
+INSERT INTO Song(ArtistID,AlbumID,SongName, Duration, Plays)
+VALUES (1,1,'Hells Bells', 05.12,213123)	,
+       (1,1,'Shoot to Thrill',05.17,675887),
+       (1,1,'What Do You Do For Money Honey', 03.35,211231),
+       (1,1,"Givin' the Dog a Bone", 03.31, 1212412),	
+       (1,1,'Let Me Put My Love Into You', 04.15,456546),
+       (1,1,'Back In Black', 04.15,56757),
+       (1,1,'You Shook Me All Night Long',03.30,234356),
+       (1,1,'Have a Drink On Me',03.58, 345445),	
+       (1,1,'Shake a Leg',04.05, 43544),		
+       (1,1,"Rock and Roll Ain't Noise Pollution", 04.26, 21312),
+       (2,2,'Tippa My Tongue',	4.20, 252452253),
+       (2,2,'Peace and Love',	4.03,  143412312),
+       (2,2,'Reach Out',	4.11,2131342),
+       (2,2,'Eddie',	5.41,32442342),
+       (2,2,'Fake as Fuck',	4.22,342424234),
+       (2,2,'Bella',	4.51,42342234),
+       (2,2,'Roulette',	4.57,314434243),
+       (2,2,'My Cigarette',	4.24,43535345),
+       (2,2,'Afterlife',	4.13,435345345),
+       (2,2,'Shoot Me a Smile',	3.43,654664),
+       (2,2,'Handful',	4.01,45645464),
+       (2,2,'The Drummer',3.24, 213213123),
+       (2,2,'Bag of Grins',	5.05,567567656),
+       (2,2,'La La La La La La La La', 3.57,64757567),
+       (2,2,'Copperbelly',	3.44,5675675),
+       (2,2,'Carry Me Home',	4.13,657567567),
+       (2,2,'In the Snow',	5.55,56756757),
+       (3,3,'The Song Remains the Same',5.32, 34141344),
+       (3,3,'The Rain Song',7.39,435656),
+       (3,3,'Over the Hills and Far Away',4.50,5363434),
+       (3,3,'The Crunge',3.17,563564563),
+       (3,3,'Dancing Days',3.43,63563563),
+       (3,3,"D'yer Mak'er",4.23,3645636),
+       (3,3,'No Quarter',7.00,563563563),
+       (3,3,'The Ocean',4.31,67657655),
+       (4,4,'Cornflake ', 03.37,43413413),
+       (4,4,'Cubensis Lenses', 05.43, 6547532),
+       (4,4,'Marmalade March', 04.45,2131),
+       (4,4,'...And The Addled Abstraction of Being', 06.26,2323531),
+       (4,4,'High Visceral', 02.31, 324341),
+       (4,4,"Surf's Up", 03.13,346365),
+       (4,4,'Gallop to Southport', 02.33,633633),
+       (4,4,'Found God in a Tomato', 08.54,3452525),
+       (4,4,'Entropy', 01.54,42542552),
+       (4,4,'Denmark/Van Gogh & Gone', 07.29,252452253);
+
+----------------------------------------------------------------------------
+
+--Procedures
+CREATE PROCEDURE ShowTop10()
+BEGIN
+
+SELECT song.SongID, song.SongName, album.AlbumName, artist.ArtistName, song.Duration, song.Plays 
+FROM song 
+LEFT JOIN album ON (song.AlbumID = album.AlbumID)
+LEFT JOIN artist ON (song.ArtistID = artist.ArtistID)
+ORDER BY song.Plays DESC
+LIMIT 10;
+
+END;
+CALL ShowTop10();
+
+
+
+----------------------------------------------------------------------------
+
+--Functions
+CREATE FUNCTION showAlbumDetails(
+  albID INT
+) RETURNS varchar(255)
+DETERMINISTIC 
+BEGIN
+  DECLARE sc INT;
+  DECLARE ad, albN, artN VARCHAR(255);
+  set sc=0;
+  set ad=' ';
+  set albN=' ';
+  set artN=' ';
+
+  SELECT AlbumName INTO albN
+  FROM Album
+  WHERE AlbumID = albID;
+
+  SELECT SongCount INTO sc
+  FROM Album
+  WHERE AlbumID = albID;
+
+  SELECT Duration INTO ad
+  FROM Album
+  WHERE AlbumID = albID;
+
+  SELECT artist.ArtistName INTO artN 
+  FROM artist 
+  LEFT JOIN album ON (artist.ArtistID = album.AlbumID)
+  WHERE album.AlbumID = albID;
+
+  RETURN CONCAT(albN, ' by/by the ', artN, ' has ', CONVERT(sc, char(10)), ' songs and is ',CONCAT(FLOOR(ad),':', SUBSTRING(ad,4,2)), ' minutes long.' );
+
+END;
+
+
+SELECT showAlbumDetails(2);
+
+----------------------------------------------------------------------------
+
+--Triggers
+CREATE TRIGGER trinsertSong
+BEFORE INSERT on song
+FOR EACH ROW BEGIN
+SET NEW.Duration =  CONCAT(FLOOR(NEW.Duration),':', SUBSTRING(NEW.Duration,3,2));
+END;
+
+INSERT INTO Song(ArtistID,AlbumID,SongName, Duration, Plays)
+VALUES (1,1,'Hells Bells(Instrumental - Backing Track)', 04.59 , 21344123);
+
+DELETE FROM song where SongID=46;
+
+ALTER TABLE song MODIFY Duration varchar(30);
+
+
+
+----------------------------------------------------------------------------
+
+
+
+
+
